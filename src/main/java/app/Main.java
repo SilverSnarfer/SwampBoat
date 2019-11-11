@@ -38,17 +38,15 @@ public class Main {
 	private static final JaxbService jaxbService = new JaxbService();
 	private static final Logger logger = LogManager.getLogger(Main.class);
 	public static void main(String[] args) {
-			Properties config = new SwampProperties();
-			Properties filterSettings = new Properties();
-			String toUnmarshall = null;
-			List<File> files = new ArrayList<>();
-			boolean isBulk = false;
+			
 
 			try {
-				config.load(new FileInputStream("src/main/resources/settings/config.properties"));
-				filterSettings.load(new FileInputStream("src/main/resources/settings/filter.properties"));
-			
-			
+				Properties config = new SwampProperties(new FileInputStream("src/main/resources/settings/config.properties"));
+				Properties filterSettings = new SwampProperties(new FileInputStream("src/main/resources/settings/filter.properties"));
+				String toUnmarshall = null;
+				List<File> files = new ArrayList<>();
+				boolean isBulk = false;
+
 			
 				if(nullSafe(config.getProperty("bulkXmlFolder")).equals("")) {
 					toUnmarshall = config.getProperty("xmlLocation");

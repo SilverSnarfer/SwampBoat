@@ -25,9 +25,13 @@ public class SwampProperties extends Properties {
 		super.load(inputStream);
 	}
 	
+	/**
+	 * Same as instantiating {@code Properties}
+	 */
 	public SwampProperties(){
 		super();
 	}
+
 	
 	/**
 	 * Same functionality as the parent {@code Properties.load(InputStream)} but also returns the instance.

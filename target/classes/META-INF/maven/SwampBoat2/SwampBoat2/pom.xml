@@ -4,7 +4,6 @@
   <artifactId>SwampBoat2</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <build>
-    <sourceDirectory>src</sourceDirectory>
     <plugins>
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
@@ -34,5 +33,7 @@
 		<version>5.5.2</version>
 		<scope>test</scope>
 	</dependency>
+	
+	
 </dependencies>
 </project>

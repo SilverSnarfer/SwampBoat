@@ -22,11 +22,11 @@ public class BugFilterService {
 		WHITELIST
 	}
 	private final Properties filterSettings;
-	private ListType listType;
+	private final ListType listType;
 	
 	public BugFilterService(Properties filterSettings) throws BugFilterException{
 		this.filterSettings = filterSettings;
-		determineListType();		
+		this.listType = determineListType();		
 	}
 	
 	/**
@@ -112,7 +112,7 @@ public class BugFilterService {
 	 * sets the listType enum to either 'whitelist' or 'blacklist' based on the filter config file.
 	 * @throws BugFilterException
 	 */
-	private void determineListType() throws BugFilterException{
+	private ListType determineListType() throws BugFilterException{
 		ListType listType = null;
 		for(Object setting: filterSettings.keySet()) {
 			if(((String)setting).contains("whitelist.")) {
@@ -130,9 +130,9 @@ public class BugFilterService {
 				}
 			}
 		}
-		this.listType = listType;
+		return listType;
 	}
 	
-	
+	public ListType getListType() {return this.listType;}
 
 }

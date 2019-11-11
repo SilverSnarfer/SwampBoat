@@ -15,6 +15,13 @@ public class TestFilenames {
 	public static final String goodConfig = testSettings + "config.properties";
 	
 	
+	//Config filter files
+	public static final String goodFilter = testSettings + "filter.properties";
+	public static final String goodFilter_whitelist = testSettings + "Filter_Whitelist.properties";
+	public static final String goodFilter_Blacklist = testSettings + "Filter_Blacklist.properties";
+	public static final String badFilter = testSettings + "Filter_Bad.properties";
+
+	
 	
 	//Data Files
 	public static final String goodOWASP = testData + "OWASP.xml";

@@ -13,7 +13,6 @@ import exceptions.BugReportException;
 import exceptions.BugSummaryException;
 import exceptions.CSVHeaderException;
 import exceptions.ConfigFileException;
-import exceptions.NullReportException;
 import pojo.AnalyzerReport.ToolName;
 import pojo.BugInstance;
 import pojo.BugSummary;
@@ -94,10 +93,12 @@ public class WriterDispatcherService {
 	 * @throws IOException
 	 * @throws NullReportException
 	 */
-	public void writeBugInstancesAndSummary(List<BugInstance> bugInstances, BugSummary bugSummary) throws IOException, NullReportException, BugReportException, BugSummaryException{
+	public void writeBugInstancesAndSummary(List<BugInstance> bugInstances, BugSummary bugSummary) throws IOException, BugReportException, BugSummaryException{
 		if(bugInstances == null || bugInstances.isEmpty()) {
+			FileWriterTool.cleanup(this.bugReportFile.getParentFile().getParentFile());
 			throw new BugReportException("No bug instances found.");
-		} else if(bugSummary == null) {
+		} else if(bugSummary == null || bugSummary.getBugCategory().isEmpty()) {
+			FileWriterTool.cleanup(this.bugReportFile.getParentFile().getParentFile());
 			throw new BugSummaryException("No bug summary found.");
 		}
 
@@ -148,8 +149,8 @@ public class WriterDispatcherService {
 
 		//Determines file locations
 		if(propertyNullSafe(useDefaultCsvDestinationProp).equalsIgnoreCase("true")) {
-			reportFileLocation = config.getProperty(defaultCsvDestinationProp) + "/" + FileWriterTool.swampDefaultFoldername;
-			summaryFileLocation = config.getProperty(defaultCsvDestinationProp) + "/" + FileWriterTool.swampDefaultFoldername;
+			reportFileLocation = config.getProperty(defaultCsvDestinationProp);
+			summaryFileLocation = config.getProperty(defaultCsvDestinationProp);
 			usingDefaultLocation = true;
 		}
 		if(!usingDefaultLocation && !propertyNullSafe(customReportDestProp).matches(spaceRegex) && !propertyNullSafe(customSummaryDestProp).matches(spaceRegex)) {

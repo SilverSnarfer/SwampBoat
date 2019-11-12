@@ -14,7 +14,7 @@ import services.WriterDispatcherService;
 public interface Writeable {
 
 	/**
-	 * Creates a csv version of the list of bug instances. Based on the report type, this method could also produce a separate HTML file (SpotBugs) or a sub-directory of messages (Owasp) 
+	 * Creates a csv version of the list of bug instances. Based on the report type, this method could also produce a separate HTML file (Like SpotBugs) or a sub-directory of messages (Like Owasp) 
 	 * @param bugInstances
 	 * @param dispatcherState
 	 * @throws IOException

@@ -4,7 +4,15 @@
 package tools;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import pojo.AnalyzerReport.ToolName;
 import pojo.Location;
@@ -15,9 +23,9 @@ import services.WriterDispatcherService;
  *
  */
 public class FileWriterTool {
-	public static final String winHome = "user.home";
-	public static final String swampDefaultFoldername = "swampDefault";
-	
+	private static final Logger logger = LogManager.getLogger(FileWriterTool.class);
+
+	public static final String winHome = "user.home";	
 	/**
 	 * converts the data from a list of Location objects to a single string
 	 * @param bugLocations
@@ -61,5 +69,45 @@ public class FileWriterTool {
 		file = new File(workingDir.getAbsolutePath() + "/" + fileName);
 			
 		return file;
+	}
+	
+	public static void cleanup(File... rootDir) throws IOException{
+		for(File dir: rootDir) {
+			for(File file: dir.listFiles()) {				
+				if(file.isDirectory()) {
+					recursiveMove(file);
+					move(file);
+				} else {
+					move(file);
+				}
+			}
+		}
+	}
+	
+	private static void recursiveMove(File root) {
+		if(!root.isDirectory() ||(root.isDirectory() && root.listFiles().length == 0)) {
+			move(root);
+			return;
+		} 
+		
+		for(File child: root.listFiles()) {
+			if(child.isDirectory()) {
+				recursiveMove(child);
+				move(child);
+			} else {
+				recursiveMove(child);
+			}
+		}	
+	}
+	
+	private static void move(File file) {
+		try {
+			Path source = Paths.get(file.getAbsolutePath());
+			Path target = Paths.get(System.getProperty("user.home") + "\\swampTrash\\");
+			
+			Files.move(source, target.resolve(source.getFileName()), StandardCopyOption.REPLACE_EXISTING);
+		}catch(IOException i) {
+			logger.error(("FileWriterTool: Unable to move file '" + file.getAbsolutePath() + "'"));
+		}
 	}
 }

@@ -1,3 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<AnalyzerReport parser_fw="resultparser" tool_version="2.1.1" parser_fw_version="3.2.3" tool_name="dependency-check" package_name="SwampBoat" assess_fw="java-assess" build_root_dir="/home/builder/build" results_root_dir="/home/builder/results" package_version="1.30000000000000004441" platform_name="ubuntu-16.04-64" assess_fw_version="2.6.13" uuid="39549217-d856-4149-9975-5be68069f75d" assessment_start_ts="1572376870.3797076" package_root_dir="pkg1"></AnalyzerReport>
+<AnalyzerReport uuid="cxzvc19543zzzeww43546cvxv8c5xczcx5434875-87\" parser_fw_version="3.1.8" package_version="1.0" platform_name="ubuntu-16.04-64" assess_fw_version="2.6.12" assessment_start_ts="4352452.3452352" tool_name="dependency-check" build_root_dir="/home/builder/build" package_name="Radv" tool_version="2.1.1" parser_fw="resultparser" assess_fw="java-assess" package_root_dir="pkg1">
+  <BugInstance id="0">
+    <Methods></Methods>
+    <BugLocations>
+      <Location id="0" primary="true">
+        <SourceFile>this/is/a/fake/jar/jackson-databind-2.8.7.jar</SourceFile>
+      </Location>
+    </BugLocations>
+    <BugGroup>Known-Vuln</BugGroup>
+    <BugCode>CVE-2019-16335</BugCode>
+    <BugSeverity>High</BugSeverity>
+    <BugMessage>theres is a problem man.
+
+    - MISC  -  https://link.to.issue.com)
+    - MLIST  -  [hbase-issues] 20190925 [GitHub] [hbase] SteNicholas opene
+    - MLIST  -  [tinkerpop-commits] 20190924 [GitHub] [tinkerpop]
+
+ Vulnerable Versions:
+
+    - cpe:/a:fasterxml:jackson-databind:2.6.7
+    - cpe:/a:fasterxml:jackson-databind:2.6.6
+
+Identifiers:
+    - maven: (com.fake.thing)   confidence: HIGH
+    - cpe: (cpe:/fake:package:thing.xml) (https://web.nvd.nist.gov/view/vuln/search-results?adv_search=true&amp;cves=on&amp;cpe_version=cpe%3A%2Fa%3Afasterxml%3Ajackson-databind%3A2.8.7)   confidence: HIGHEST
+    - cpe: (cpe:/a:fasterxml:jackson:2.8.7)   confidence: LOW
+</BugMessage>
+    <BugTrace>
+      <BuildId>1</BuildId>
+      <AssessmentReportFile>dependency-check-report.xml</AssessmentReportFile>
+      <InstanceLocation>
+        <Xpath>/analysis/dependencies/dependency[6]/vulnerabilities/vulnerability[0]</Xpath>
+      </InstanceLocation>
+    </BugTrace>
+  </BugInstance>
+  <BugSummary>
+    <BugCategory group="Known-Vuln" code="CVE-2010-2542" count="1" bytes="6843" />
+  </BugSummary>
+</AnalyzerReport>

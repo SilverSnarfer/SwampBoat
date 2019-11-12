@@ -25,6 +25,8 @@ public class TestFilenames {
 	
 	//Data Files
 	public static final String goodOWASP = testData + "OWASP.xml";
+
+	public static final String emptyOwasp = testData + "OWASP_empty.xml";
 	public static final String goodCheckstyle = testData + "checkstyle.xml";
 	public static final String goodPMD = testData + "PMD.xml";
 	public static final String goodSpotBugs = testData + "SpotBugs.xml";

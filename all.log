@@ -1,0 +1,8 @@
+2019-11-12 17:54:00.945 [main] INFO  app.Main - Processing single xml file ('xmlLocation' option)...
+2019-11-12 17:54:01.082 [main] ERROR tools.FileWriterTool - FileWriterTool: Unable to move file 'C:\Users\haywarda2\swamp\default\OWASP\owasp_messages'
+2019-11-12 17:54:01.086 [main] ERROR tools.FileWriterTool - FileWriterTool: Unable to move file 'C:\Users\haywarda2\swamp\default\OWASP'
+2019-11-12 17:54:01.087 [main] ERROR app.Main - 
+exceptions.BugReportException: No bug instances found.
+	at services.WriterDispatcherService.writeBugInstancesAndSummary(WriterDispatcherService.java:99) ~[classes/:?]
+	at app.Main.main(Main.java:84) [classes/:?]
+2019-11-12 17:54:01.095 [main] INFO  app.Main - Done

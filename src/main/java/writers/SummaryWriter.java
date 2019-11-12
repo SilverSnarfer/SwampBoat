@@ -6,7 +6,6 @@ package writers;
 import java.io.FileWriter;
 import java.io.IOException;
 
-import exceptions.NullReportException;
 import pojo.BugCategory;
 import pojo.BugSummary;
 import services.WriterDispatcherService;
@@ -26,13 +25,7 @@ public class SummaryWriter {
 	 * @throws IOException
 	 * @throws NullReportException
 	 */
-	public void writeBugSummary(BugSummary bugSummary, WriterDispatcherService dispatcherState, String summaryHeader) throws IOException, NullReportException{
-			
-			
-		if(bugSummary == null || bugSummary.getBugCategory() == null) {
-			throw new NullReportException();
-		}
-		
+	public void writeBugSummary(BugSummary bugSummary, WriterDispatcherService dispatcherState, String summaryHeader) throws IOException{		
 		FileWriter fileWriter = new FileWriter(dispatcherState.getBugSummaryFile());
 	
 		fileWriter.append(summaryHeader + WriterDispatcherService.NEW_LINE);

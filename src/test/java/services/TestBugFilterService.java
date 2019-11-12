@@ -10,8 +10,8 @@ import java.util.Properties;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import TestingTools.TestFilenames;
 import exceptions.BugFilterException;
@@ -39,7 +39,7 @@ public class TestBugFilterService {
 			logger.error("TestBugFilterService.testInstantiation", e);
 			noError = false;
 		}
-		Assert.assertTrue(noError && bf.getListType().equals(ListType.WHITELIST));
+		Assertions.assertTrue(noError && bf.getListType().equals(ListType.WHITELIST));
 	}
 	
 	
@@ -55,22 +55,21 @@ public class TestBugFilterService {
 			logger.error("TestBugFilterService.testInstantiation", e);
 			noError = false;
 		}
-		Assert.assertTrue(noError && bf.getListType().equals(ListType.BLACKLIST));
+		Assertions.assertTrue(noError && bf.getListType().equals(ListType.BLACKLIST));
 	}
 	
 	@Test
 	public void testBadInstantiation() {
 		boolean noError = true;
-		BugFilterService bf = null;
 		try {
 			SwampProperties sp = new SwampProperties(new FileInputStream(TestFilenames.badFilter));
-			bf = new BugFilterService(sp);
-		}catch (BugFilterException b) {
+			new BugFilterService(sp);
+		} catch (BugFilterException b) {
 			noError = false;
 		} catch (Exception e) {
 			logger.error("Error during 'TestBugFilterService.testInstantiation'", e);
 		}
-		Assert.assertTrue(!noError);
+		Assertions.assertFalse(noError);
 	}
 	
 	@Test
@@ -90,7 +89,7 @@ public class TestBugFilterService {
 			noError = false;
 		}
 		
-		Assert.assertTrue(noError && bugInstances.size() < analyzerReport.getBugInstances().size());
+		Assertions.assertTrue(noError && bugInstances.size() < analyzerReport.getBugInstances().size());
 	}
 	
 

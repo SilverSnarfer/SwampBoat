@@ -7,25 +7,25 @@ import java.util.Properties;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Assert;
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import TestingTools.CleanupUtility;
 import TestingTools.TestFilenames;
+import exceptions.BugReportException;
 import pojo.AnalyzerReport;
 import pojo.AnalyzerReport.ToolName;
+import tools.FileWriterTool;
 import tools.SwampProperties;
 
 public class TestWriterDispatcherService {
 	private static final Logger logger = LogManager.getLogger(TestWriterDispatcherService.class);
 	private final JaxbService jaxbService = new JaxbService();
 	
-	@AfterAll
+	//@AfterAll
 	public static void cleanup() {
-		logger.info("finished tests");
 		try {
-			CleanupUtility.cleanup();
+			FileWriterTool.cleanup(new File(System.getProperty("user.home") + "/swampTest/default"), new File(System.getProperty("user.home") + "/swampTest/custom"));
 			logger.info("Cleanup successful. Dont forget to cleanout the trash folder after a while: (" + System.getProperty("user.home") + "\\swampTrash" + ")");
 		} catch (IOException e) {
 			logger.error("Unable to cleanup.", e);
@@ -44,9 +44,27 @@ public class TestWriterDispatcherService {
 			exceptionFound = true;
 		}
 		
-		Assert.assertFalse(exceptionFound);
+		Assertions.assertFalse(exceptionFound);
 	}
 	
+	
+	@Test
+	public void testWriteEmptyOWASP() {
+		boolean exceptionFound = false;
+		ToolName toolName = ToolName.OWASP;
+		try {
+			AnalyzerReport analyzerReport = jaxbService.unMarshall(new File(TestFilenames.emptyOwasp));
+			Properties config = new SwampProperties(new FileInputStream(TestFilenames.goodConfig));
+			WriterDispatcherService wds = new WriterDispatcherService(config, toolName);
+			wds.writeBugInstancesAndSummary(analyzerReport.getBugInstances(), analyzerReport.getBugSummary());
+		} catch(BugReportException b) {
+			exceptionFound = true;
+		} catch (Exception e) {
+			logger.error("Error during 'TestWriterDispatcherService.testWriteOWASP'", e);
+		}
+		
+		Assertions.assertTrue(exceptionFound);
+	}
 	
 	@Test
 	public void testWriteOWASP() {
@@ -59,10 +77,9 @@ public class TestWriterDispatcherService {
 			wds.writeBugInstancesAndSummary(analyzerReport.getBugInstances(), analyzerReport.getBugSummary());
 		} catch (Exception e) {
 			logger.error("Error during 'TestWriterDispatcherService.testWriteOWASP'", e);
-			exceptionFound = true;
 		}
 		
-		Assert.assertFalse(exceptionFound);
+		Assertions.assertFalse(exceptionFound);
 	}
 	
 	@Test
@@ -79,7 +96,7 @@ public class TestWriterDispatcherService {
 			exceptionFound = true;
 		}
 		
-		Assert.assertFalse(exceptionFound);
+		Assertions.assertFalse(exceptionFound);
 	}
 	
 	@Test
@@ -96,7 +113,7 @@ public class TestWriterDispatcherService {
 			exceptionFound = true;
 		}
 		
-		Assert.assertFalse(exceptionFound);
+		Assertions.assertFalse(exceptionFound);
 	}
 	
 	@Test
@@ -113,7 +130,7 @@ public class TestWriterDispatcherService {
 			exceptionFound = true;
 		}
 		
-		Assert.assertFalse(exceptionFound);
+		Assertions.assertFalse(exceptionFound);
 	}
 
 }

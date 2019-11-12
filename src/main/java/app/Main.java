@@ -20,7 +20,6 @@ import exceptions.BugReportException;
 import exceptions.BugSummaryException;
 import exceptions.CSVHeaderException;
 import exceptions.ConfigFileException;
-import exceptions.NullReportException;
 import exceptions.XMLSourceException;
 import pojo.AnalyzerReport;
 import pojo.BugInstance;
@@ -72,20 +71,21 @@ public class Main {
 					
 					try {
 						AnalyzerReport analyzerReport = jaxbService.unMarshall(file);
+						List<BugInstance> bugInstances = analyzerReport.getBugInstances();
 						WriterDispatcherService csvWriter = new WriterDispatcherService(config, analyzerReport.getToolName());
 						BugFilterService bugFilter = new BugFilterService(filterSettings);
-						List<BugInstance> bugInstances = analyzerReport.getBugInstances();
 
-						if(filterSettings.size() > 0) {
+						if(filterSettings.size() > 0 && bugInstances != null) {
 							logger.info("filtering...");
 							bugInstances = bugFilter.filter(bugInstances);
 						}
+						 
 						
 						csvWriter.writeBugInstancesAndSummary(bugInstances, analyzerReport.getBugSummary());
 						logger.info("Finished " + file.getAbsolutePath());
 					} catch (BugFilterException | JAXBException | ConfigFileException | 
 							IOException | XMLSourceException | CSVHeaderException | 
-							NullReportException | BugSummaryException | BugReportException e) {
+							BugSummaryException | BugReportException e) {
 						logger.error("",e);
 						break;
 					}

@@ -11,6 +11,8 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
 
+import org.apache.commons.io.FileExistsException;
+import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -71,43 +73,26 @@ public class FileWriterTool {
 		return file;
 	}
 	
-	public static void cleanup(File... rootDir) throws IOException{
+	public static void cleanup(File... rootDir) throws IOException{		
 		for(File dir: rootDir) {
-			for(File file: dir.listFiles()) {				
-				if(file.isDirectory()) {
-					recursiveMove(file);
-					move(file);
-				} else {
-					move(file);
-				}
-			}
-		}
-	}
-	
-	private static void recursiveMove(File root) {
-		if(!root.isDirectory() ||(root.isDirectory() && root.listFiles().length == 0)) {
-			move(root);
-			return;
-		} 
-		
-		for(File child: root.listFiles()) {
-			if(child.isDirectory()) {
-				recursiveMove(child);
+			for(File child: dir.listFiles()) {
 				move(child);
-			} else {
-				recursiveMove(child);
-			}
-		}	
+			}	
+		}
 	}
 	
 	private static void move(File file) {
 		try {
-			Path source = Paths.get(file.getAbsolutePath());
-			Path target = Paths.get(System.getProperty("user.home") + "\\swampTrash\\");
-			
-			Files.move(source, target.resolve(source.getFileName()), StandardCopyOption.REPLACE_EXISTING);
-		}catch(IOException i) {
-			logger.error(("FileWriterTool: Unable to move file '" + file.getAbsolutePath() + "'"));
+			FileUtils.moveDirectoryToDirectory(file, new File(System.getProperty("user.home") + "\\swampTrash\\"), true);
+		} catch(FileExistsException f) {
+			try {
+				FileUtils.deleteDirectory(new File(System.getProperty("user.home") + "\\swampTrash\\" + file.getName()));
+				FileUtils.moveDirectoryToDirectory(file, new File(System.getProperty("user.home") + "\\swampTrash\\"), true);
+			} catch (IOException e) {
+				logger.error(("FileWriterTool: Unable to delete '" + System.getProperty("user.home") + "\\swampTrash\\" + file.getName() + "'"));
+			}
+		} catch(IOException i) {
+			logger.error(("FileWriterTool: Unable to move '" + file.getAbsolutePath() + "'"));
 		}
 	}
 }

@@ -22,7 +22,7 @@ public class TestWriterDispatcherService {
 	private static final Logger logger = LogManager.getLogger(TestWriterDispatcherService.class);
 	private final JaxbService jaxbService = new JaxbService();
 	
-	//@AfterAll
+	@AfterAll
 	public static void cleanup() {
 		try {
 			FileWriterTool.cleanup(new File(System.getProperty("user.home") + "/swampTest/default"), new File(System.getProperty("user.home") + "/swampTest/custom"));

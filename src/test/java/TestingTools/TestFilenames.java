@@ -13,7 +13,7 @@ public class TestFilenames {
 
 	//Config files
 	public static final String goodConfig = testSettings + "config.properties";
-	
+	public static final String goodConfig_custom = testSettings + "config_custom.properties";
 	
 	//Config filter files
 	public static final String goodFilter = testSettings + "filter.properties";
@@ -25,7 +25,6 @@ public class TestFilenames {
 	
 	//Data Files
 	public static final String goodOWASP = testData + "OWASP.xml";
-
 	public static final String emptyOwasp = testData + "OWASP_empty.xml";
 	public static final String goodCheckstyle = testData + "checkstyle.xml";
 	public static final String goodPMD = testData + "PMD.xml";

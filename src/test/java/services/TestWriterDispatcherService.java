@@ -32,6 +32,10 @@ public class TestWriterDispatcherService {
 		}		
 	}
 	
+	
+	// ***********************************************
+	// ************* DEFAULT LOCATIONS ***************
+	// ***********************************************
 	@Test
 	public void testWriterInstantiation() {
 		boolean exceptionFound = false;
@@ -133,4 +137,96 @@ public class TestWriterDispatcherService {
 		Assertions.assertFalse(exceptionFound);
 	}
 
+	// ***********************************************
+	// *************  CUSTOM LOCATION  ***************
+	// ***********************************************
+	
+	@Test
+	public void testWriteOWASPCustom() {
+		boolean exceptionFound = false;
+		ToolName toolName = ToolName.OWASP;
+		try {
+			AnalyzerReport analyzerReport = jaxbService.unMarshall(new File(TestFilenames.goodOWASP));
+			Properties config = new SwampProperties(new FileInputStream(TestFilenames.goodConfig_custom));
+			WriterDispatcherService wds = new WriterDispatcherService(config, toolName);
+			wds.writeBugInstancesAndSummary(analyzerReport.getBugInstances(), analyzerReport.getBugSummary());
+		} catch(BugReportException b) {
+			exceptionFound = true;
+			logger.error(b);
+		} catch (Exception e) {
+			exceptionFound = true;
+			logger.error("Error during 'TestWriterDispatcherService.testWriteOWASPCustom'", e);
+		}
+		
+		Assertions.assertFalse(exceptionFound);
+	}
+
+	@Test
+	public void testWriteEmptyOWASPCustom() {
+		boolean exceptionFound = false;
+		ToolName toolName = ToolName.OWASP;
+		try {
+			AnalyzerReport analyzerReport = jaxbService.unMarshall(new File(TestFilenames.emptyOwasp));
+			Properties config = new SwampProperties(new FileInputStream(TestFilenames.goodConfig_custom));
+			WriterDispatcherService wds = new WriterDispatcherService(config, toolName);
+			wds.writeBugInstancesAndSummary(analyzerReport.getBugInstances(), analyzerReport.getBugSummary());
+		} catch(BugReportException b) {
+			exceptionFound = true;
+		} catch (Exception e) {
+			logger.error("Error during 'TestWriterDispatcherService.testWriteEmptyOWASPCustom'", e);
+		}
+		
+		Assertions.assertTrue(exceptionFound);
+	}
+
+	@Test
+	public void testWritePMDCustom() {
+		boolean exceptionFound = false;
+		ToolName toolName = ToolName.PMD;
+		try {
+			AnalyzerReport analyzerReport = jaxbService.unMarshall(new File(TestFilenames.goodPMD));
+			Properties config = new SwampProperties(new FileInputStream(TestFilenames.goodConfig_custom));
+			WriterDispatcherService wds = new WriterDispatcherService(config, toolName);
+			wds.writeBugInstancesAndSummary(analyzerReport.getBugInstances(), analyzerReport.getBugSummary());
+		} catch (Exception e) {
+			logger.error("Error during 'TestWriterDispatcherService.testWritePMDCustom'", e);
+			exceptionFound = true;
+		}
+		
+		Assertions.assertFalse(exceptionFound);
+	}
+
+	@Test
+	public void testWriteSpotBugsCustom() {
+		boolean exceptionFound = false;
+		ToolName toolName = ToolName.SPOT_BUGS;
+		try {
+			AnalyzerReport analyzerReport = jaxbService.unMarshall(new File(TestFilenames.goodSpotBugs));
+			Properties config = new SwampProperties(new FileInputStream(TestFilenames.goodConfig_custom));
+			WriterDispatcherService wds = new WriterDispatcherService(config, toolName);
+			wds.writeBugInstancesAndSummary(analyzerReport.getBugInstances(), analyzerReport.getBugSummary());
+		} catch (Exception e) {
+			logger.error("Error during 'TestWriterDispatcherService.testWriteSpotBugsCustom'", e);
+			exceptionFound = true;
+		}
+		
+		Assertions.assertFalse(exceptionFound);
+	}
+
+	@Test
+	public void testWriteCheckstyleCustom() {
+		boolean exceptionFound = false;
+		ToolName toolName = ToolName.CHECK_STYLE;
+		try {
+			AnalyzerReport analyzerReport = jaxbService.unMarshall(new File(TestFilenames.goodCheckstyle));
+			Properties config = new SwampProperties(new FileInputStream(TestFilenames.goodConfig_custom));
+			WriterDispatcherService wds = new WriterDispatcherService(config, toolName);
+			wds.writeBugInstancesAndSummary(analyzerReport.getBugInstances(), analyzerReport.getBugSummary());
+		} catch (Exception e) {
+			logger.error("Error during 'TestWriterDispatcherService.testWriteCheckstyleCustom'", e);
+			exceptionFound = true;
+		}
+		
+		Assertions.assertFalse(exceptionFound);
+	}
 }

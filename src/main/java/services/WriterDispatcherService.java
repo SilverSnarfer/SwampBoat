@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 import exceptions.BugReportException;
@@ -17,6 +18,7 @@ import pojo.AnalyzerReport.ToolName;
 import pojo.BugInstance;
 import pojo.BugSummary;
 import tools.FileWriterTool;
+import tools.FileWriterTool.FileType;
 import writers.CheckStyleWriter;
 import writers.OWASPWriter;
 import writers.PMDWriter;
@@ -68,8 +70,10 @@ public class WriterDispatcherService {
 		//Relative to the config property 'saveRuns'. if true, a timestamp will be added to the foldername(for persistence) of the current run
 		this.saveRuns = config.getProperty("saveRuns").trim().equalsIgnoreCase("true") ? true : false;
 		
-		initializeFilesAndFolders();
+		Map<Enum<FileType>, File> files = FileWriterTool.initializeFilesAndFolders(config, toolName, timeStamp, saveRuns);
 		
+		this.bugReportFile = files.get(FileType.BUG_REPORT);
+		this.bugSummaryFile = files.get(FileType.BUG_SUMMARY);
 		this.csvReportHeader = determineHeader();
 
 		this.summaryWriter = new SummaryWriter();
@@ -120,71 +124,4 @@ public class WriterDispatcherService {
 		}
 		
 	}
-	
-	
-	/**
-	 * depending on the settings in the configuration file, this creates the proper filename and designates the proper parent directory.
-	 * @throws ConfigFileException
-	 */
-	private void initializeFilesAndFolders() throws ConfigFileException{		
-		String spaceRegex = "^\\s*$";
-
-		String useDefaultCsvDestinationProp = "useDefaultCsvDestination";
-		String defaultCsvDestinationProp = "defaultCsvDestination";
-		String defaultReportFilenameProp = "defaultCsvBugReportFilename";
-		String defaultSummaryFilenameProp = "defaultCsvBugSummaryFilename";
-		
-		String customReportFilenameProp = "customCsvBugReportFilename";
-		String customSummaryFilenameProp = "customCsvBugSummaryFilename";
-		String customReportDestProp = "customCsvBugReportDestination";
-		String customSummaryDestProp = "customCsvBugSummaryDestination";
-
-		String reportFileLocation = null;
-		String reportFilename = null;
-		String summaryFileLocation = null;
-		String summaryFilename = null;
-		
-		boolean usingDefaultLocation = false;
-		boolean usingDefaultFilenames = false;
-
-		//Determines file locations
-		if(propertyNullSafe(useDefaultCsvDestinationProp).equalsIgnoreCase("true")) {
-			reportFileLocation = config.getProperty(defaultCsvDestinationProp);
-			summaryFileLocation = config.getProperty(defaultCsvDestinationProp);
-			usingDefaultLocation = true;
-		}
-		if(!usingDefaultLocation && !propertyNullSafe(customReportDestProp).matches(spaceRegex) && !propertyNullSafe(customSummaryDestProp).matches(spaceRegex)) {
-			reportFileLocation = config.getProperty(customReportDestProp);
-			summaryFileLocation = config.getProperty(customSummaryDestProp);
-		} else if(usingDefaultLocation && (!propertyNullSafe(customReportDestProp).matches(spaceRegex) || !propertyNullSafe(customSummaryDestProp).matches(spaceRegex))){
-			throw new ConfigFileException("problem with your csv file settings (config.properties). Make sure either 'customCsvBug(Report/Summary)Destination' OR 'defaultCsvDestination'(not both) is set in the config file.");
-		}
-		
-		//Determines filenames
-		if(!propertyNullSafe(defaultReportFilenameProp).matches(spaceRegex) && !propertyNullSafe(defaultSummaryFilenameProp).matches(spaceRegex)) {
-			reportFilename = config.getProperty(defaultReportFilenameProp);
-			summaryFilename = config.getProperty(defaultSummaryFilenameProp);
-			usingDefaultFilenames = true;
-		} else if(!propertyNullSafe(defaultReportFilenameProp).matches(spaceRegex) || !propertyNullSafe(defaultSummaryFilenameProp).matches(spaceRegex)){
-			throw new ConfigFileException("problem with your csv file settings (config.properties). Make sure either 'customCsvBug(Report/Summary)Filename' OR 'default(Report/Summary)FilenameProp'(not both) is set in the config file.");
-		}
-		if((!usingDefaultFilenames && (propertyNullSafe(customReportFilenameProp).matches(spaceRegex) || propertyNullSafe(customSummaryFilenameProp).matches(spaceRegex))) ||
-		   (usingDefaultFilenames && (!propertyNullSafe(customReportFilenameProp).matches(spaceRegex) || !propertyNullSafe(customSummaryFilenameProp).matches(spaceRegex)))	) {
-			throw new ConfigFileException("problem with your csv file settings (config.properties). Make sure either 'customCsvBug(Report/Summary)Filename' OR 'default(Report/Summary)FilenameProp'(not both) is set in the config file.");
-		} else if(!usingDefaultFilenames) {
-			reportFilename = config.getProperty(customReportFilenameProp);
-			summaryFilename = config.getProperty(customSummaryFilenameProp);
-		}
-		this.bugSummaryFile = FileWriterTool.initWorkspace(summaryFileLocation, summaryFilename, this);
-		this.bugReportFile = FileWriterTool.initWorkspace(reportFileLocation, reportFilename, this);
-	}
-	
-	
-	private String propertyNullSafe(String property) {
-		if(config.getProperty(property) != null) {
-			return config.getProperty(property).trim();
-		}
-		return "";
-	}
-	
 }

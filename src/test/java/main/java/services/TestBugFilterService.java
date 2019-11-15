@@ -1,7 +1,7 @@
 /**
  * 
  */
-package services;
+package main.java.services;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -13,12 +13,14 @@ import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import TestingTools.TestFilenames;
+import TestingTools.Filenames;
 import exceptions.BugFilterException;
 import pojo.AnalyzerReport;
 import pojo.BugInstance;
+import services.BugFilterService;
+import services.JaxbService;
 import services.BugFilterService.ListType;
-import tools.SwampProperties;
+import wrappers.SwampProperties;
 
 /**
  * @author Aaron.Hayward
@@ -33,7 +35,7 @@ public class TestBugFilterService {
 		boolean noError = true;
 		BugFilterService bf = null;
 		try {
-			SwampProperties sp = new SwampProperties(new FileInputStream(TestFilenames.goodFilter_whitelist));
+			SwampProperties sp = new SwampProperties(new FileInputStream(Filenames.goodFilter_whitelist));
 			bf = new BugFilterService(sp);
 		} catch (Exception e) {
 			logger.error("TestBugFilterService.testInstantiation", e);
@@ -49,7 +51,7 @@ public class TestBugFilterService {
 		boolean noError = true;
 		BugFilterService bf = null;
 		try {
-			Properties sp = new SwampProperties(new FileInputStream(TestFilenames.goodFilter_Blacklist));
+			Properties sp = new SwampProperties(new FileInputStream(Filenames.goodFilter_Blacklist));
 			bf = new BugFilterService(sp);
 		} catch (Exception e) {
 			logger.error("TestBugFilterService.testInstantiation", e);
@@ -62,7 +64,7 @@ public class TestBugFilterService {
 	public void testBadInstantiation() {
 		boolean noError = true;
 		try {
-			SwampProperties sp = new SwampProperties(new FileInputStream(TestFilenames.badFilter));
+			SwampProperties sp = new SwampProperties(new FileInputStream(Filenames.badFilter));
 			new BugFilterService(sp);
 		} catch (BugFilterException b) {
 			noError = false;
@@ -80,8 +82,8 @@ public class TestBugFilterService {
 		List<BugInstance> bugInstances = null;
 		
 		try {
-			Properties sp = new SwampProperties(new FileInputStream(TestFilenames.goodFilter));
-			analyzerReport = jaxbService.unMarshall(new File(TestFilenames.goodPMD));
+			Properties sp = new SwampProperties(new FileInputStream(Filenames.goodFilter));
+			analyzerReport = jaxbService.unMarshall(new File(Filenames.goodPMD));
 			bf = new BugFilterService(sp);
 			bugInstances = bf.filter(analyzerReport.getBugInstances());
 		} catch (Exception e) {

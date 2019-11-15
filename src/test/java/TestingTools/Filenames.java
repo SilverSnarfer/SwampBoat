@@ -7,7 +7,7 @@ package TestingTools;
  * @author Aaron.Hayward
  *
  */
-public class TestFilenames {
+public class Filenames {
 	private static final String testSettings = "src/main/resources/testData/testSettings/";
 	private static final String testData = "src/main/resources/testData/";
 

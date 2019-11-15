@@ -5,17 +5,17 @@ package tools;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 
 import org.apache.commons.io.FileExistsException;
 import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import exceptions.ConfigFileException;
 import pojo.AnalyzerReport.ToolName;
 import pojo.Location;
 import services.WriterDispatcherService;
@@ -58,19 +58,12 @@ public class FileWriterTool {
 
 	}
 	
-	public static File initWorkspace(String path, String fileName, WriterDispatcherService dispatcherState) {
-		File file = null;
-		boolean saveRuns = dispatcherState.isSaveRuns();
-		String timeStamp = !saveRuns ? "" : dispatcherState.getTimeStamp();
-		
-		File workingDir = new File(path+ "/" + dispatcherState.getToolName().toString() + timeStamp);
+	private static File initWorkspace(String path, String fileName, ToolName toolName, String timeStamp, boolean isSaveRuns) {
+		File workingDir = new File(path+ "/" + toolName.toString() + (!isSaveRuns ? "" : timeStamp));
 		if(!workingDir.exists()) {
 			workingDir.mkdir();
-		}
-		
-		file = new File(workingDir.getAbsolutePath() + "/" + fileName);
-			
-		return file;
+		}			
+		return new File(workingDir.getAbsolutePath() + "/" + fileName);
 	}
 	
 	public static void cleanup(File... rootDir) throws IOException{		
@@ -89,10 +82,87 @@ public class FileWriterTool {
 				FileUtils.deleteDirectory(new File(System.getProperty("user.home") + "\\swampTrash\\" + file.getName()));
 				FileUtils.moveDirectoryToDirectory(file, new File(System.getProperty("user.home") + "\\swampTrash\\"), true);
 			} catch (IOException e) {
-				logger.error(("FileWriterTool: Unable to delete '" + System.getProperty("user.home") + "\\swampTrash\\" + file.getName() + "'"));
+				logger.error(("FileWriterTool: Unable to delete '" + System.getProperty("user.home") + "\\swampTrash\\" + file.getName() + "' before moving '" + file.getAbsolutePath() + "'"));
 			}
 		} catch(IOException i) {
 			logger.error(("FileWriterTool: Unable to move '" + file.getAbsolutePath() + "'"));
 		}
+	}
+
+	/**
+	 * depending on the settings in the configuration file, this creates the proper filename and designates the proper parent directory.
+	 * @throws ConfigFileException
+	 */
+	public static Map<Enum<FileType>, File> initializeFilesAndFolders(Properties config, ToolName toolName, String timeStamp, boolean isSaveRuns) throws ConfigFileException{		
+		String spaceRegex = "^\\s*$";
+
+		String useDefaultCsvDestinationProp = "useDefaultCsvDestination";
+		String defaultCsvDestinationProp = "defaultCsvDestination";
+		String defaultReportFilenameProp = "defaultCsvBugReportFilename";
+		String defaultSummaryFilenameProp = "defaultCsvBugSummaryFilename";
+		
+		String customReportFilenameProp = "customCsvBugReportFilename";
+		String customSummaryFilenameProp = "customCsvBugSummaryFilename";
+		String customReportDestProp = "customCsvBugReportDestination";
+		String customSummaryDestProp = "customCsvBugSummaryDestination";
+
+		String reportFileLocation = null;
+		String reportFilename = null;
+		String summaryFileLocation = null;
+		String summaryFilename = null;
+		
+		boolean usingDefaultLocation = false;
+		boolean usingDefaultFilenames = false;
+
+		//Determines file locations
+		if(propertyNullSafe(useDefaultCsvDestinationProp, config).equalsIgnoreCase("true")) {
+			reportFileLocation = config.getProperty(defaultCsvDestinationProp);
+			summaryFileLocation = config.getProperty(defaultCsvDestinationProp);
+			usingDefaultLocation = true;
+		}
+		if(!usingDefaultLocation && !propertyNullSafe(customReportDestProp ,config).matches(spaceRegex) && !propertyNullSafe(customSummaryDestProp ,config).matches(spaceRegex)) {
+			reportFileLocation = config.getProperty(customReportDestProp);
+			summaryFileLocation = config.getProperty(customSummaryDestProp);
+		} else if(usingDefaultLocation && (!propertyNullSafe(customReportDestProp ,config).matches(spaceRegex) || !propertyNullSafe(customSummaryDestProp ,config).matches(spaceRegex))){
+			throw new ConfigFileException("problem with your csv file settings (config.properties). Make sure either 'customCsvBug(Report/Summary)Destination' OR 'defaultCsvDestination'(not both) is set in the config file.");
+		} else if ((usingDefaultLocation && propertyNullSafe(defaultCsvDestinationProp ,config).matches(spaceRegex)) ||
+				!usingDefaultLocation && (propertyNullSafe(customReportDestProp ,config).matches(spaceRegex) || propertyNullSafe(customSummaryDestProp ,config).matches(spaceRegex))) {
+			throw new ConfigFileException("problem with your csv file settings (config.properties). Make sure either 'customCsvBug(Report/Summary)Destination' OR 'defaultCsvDestination'(not both) is set in the config file.");
+		}
+		
+		//Determines filenames
+		if(!propertyNullSafe(defaultReportFilenameProp ,config).matches(spaceRegex) && !propertyNullSafe(defaultSummaryFilenameProp ,config).matches(spaceRegex)) {
+			reportFilename = config.getProperty(defaultReportFilenameProp);
+			summaryFilename = config.getProperty(defaultSummaryFilenameProp);
+			usingDefaultFilenames = true;
+		} else if(!propertyNullSafe(defaultReportFilenameProp ,config).matches(spaceRegex) || !propertyNullSafe(defaultSummaryFilenameProp ,config).matches(spaceRegex)){
+			throw new ConfigFileException("problem with your csv file settings (config.properties). Make sure either 'customCsvBug(Report/Summary)Filename' OR 'default(Report/Summary)FilenameProp'(not both) is set in the config file.");
+		}
+		if((!usingDefaultFilenames && (propertyNullSafe(customReportFilenameProp ,config).matches(spaceRegex) || propertyNullSafe(customSummaryFilenameProp ,config).matches(spaceRegex))) ||
+		   (usingDefaultFilenames && (!propertyNullSafe(customReportFilenameProp ,config).matches(spaceRegex) || !propertyNullSafe(customSummaryFilenameProp ,config).matches(spaceRegex)))	) {
+			throw new ConfigFileException("problem with your csv file settings (config.properties). Make sure either 'customCsvBug(Report/Summary)Filename' OR 'default(Report/Summary)FilenameProp'(not both) is set in the config file.");
+		} else if(!usingDefaultFilenames) {
+			reportFilename = config.getProperty(customReportFilenameProp);
+			summaryFilename = config.getProperty(customSummaryFilenameProp);
+		}
+		Map<Enum<FileType>, File> files = new HashMap<>();
+		
+		
+		files.put(FileType.BUG_SUMMARY, initWorkspace(summaryFileLocation, summaryFilename, toolName, timeStamp, isSaveRuns));
+		files.put(FileType.BUG_REPORT, initWorkspace(reportFileLocation, reportFilename, toolName, timeStamp, isSaveRuns));
+		
+		return files;
+	}
+	
+	private static String propertyNullSafe(String property, Properties config) {
+		if(config.getProperty(property) != null) {
+			return config.getProperty(property).trim();
+		}
+		return "";
+	}
+	
+	public static enum FileType {
+		BUG_SUMMARY,
+		BUG_REPORT
 	}
 }

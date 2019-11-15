@@ -26,7 +26,7 @@ import pojo.BugInstance;
 import services.BugFilterService;
 import services.JaxbService;
 import services.WriterDispatcherService;
-import tools.SwampProperties;
+import wrappers.SwampProperties;
 
 /**
  * @author Aaron.Hayward

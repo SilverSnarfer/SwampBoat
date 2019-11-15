@@ -1,4 +1,4 @@
-package services;
+package main.java.services;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -11,12 +11,14 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import TestingTools.TestFilenames;
+import TestingTools.Filenames;
 import exceptions.BugReportException;
 import pojo.AnalyzerReport;
 import pojo.AnalyzerReport.ToolName;
+import services.JaxbService;
+import services.WriterDispatcherService;
 import tools.FileWriterTool;
-import tools.SwampProperties;
+import wrappers.SwampProperties;
 
 public class TestWriterDispatcherService {
 	private static final Logger logger = LogManager.getLogger(TestWriterDispatcherService.class);
@@ -41,7 +43,7 @@ public class TestWriterDispatcherService {
 		boolean exceptionFound = false;
 		ToolName toolName = ToolName.OWASP;
 		try {
-			Properties config = new SwampProperties(new FileInputStream(TestFilenames.goodConfig));
+			Properties config = new SwampProperties(new FileInputStream(Filenames.goodConfig));
 			new WriterDispatcherService(config, toolName);	
 		} catch (Exception e) {
 			logger.error("Error during 'TestWriterDispatcherService.testWriterInstantiation'", e);
@@ -57,8 +59,8 @@ public class TestWriterDispatcherService {
 		boolean exceptionFound = false;
 		ToolName toolName = ToolName.OWASP;
 		try {
-			AnalyzerReport analyzerReport = jaxbService.unMarshall(new File(TestFilenames.emptyOwasp));
-			Properties config = new SwampProperties(new FileInputStream(TestFilenames.goodConfig));
+			AnalyzerReport analyzerReport = jaxbService.unMarshall(new File(Filenames.emptyOwasp));
+			Properties config = new SwampProperties(new FileInputStream(Filenames.goodConfig));
 			WriterDispatcherService wds = new WriterDispatcherService(config, toolName);
 			wds.writeBugInstancesAndSummary(analyzerReport.getBugInstances(), analyzerReport.getBugSummary());
 		} catch(BugReportException b) {
@@ -75,8 +77,8 @@ public class TestWriterDispatcherService {
 		boolean exceptionFound = false;
 		ToolName toolName = ToolName.OWASP;
 		try {
-			AnalyzerReport analyzerReport = jaxbService.unMarshall(new File(TestFilenames.goodOWASP));
-			Properties config = new SwampProperties(new FileInputStream(TestFilenames.goodConfig));
+			AnalyzerReport analyzerReport = jaxbService.unMarshall(new File(Filenames.goodOWASP));
+			Properties config = new SwampProperties(new FileInputStream(Filenames.goodConfig));
 			WriterDispatcherService wds = new WriterDispatcherService(config, toolName);
 			wds.writeBugInstancesAndSummary(analyzerReport.getBugInstances(), analyzerReport.getBugSummary());
 		} catch (Exception e) {
@@ -91,8 +93,8 @@ public class TestWriterDispatcherService {
 		boolean exceptionFound = false;
 		ToolName toolName = ToolName.PMD;
 		try {
-			AnalyzerReport analyzerReport = jaxbService.unMarshall(new File(TestFilenames.goodPMD));
-			Properties config = new SwampProperties(new FileInputStream(TestFilenames.goodConfig));
+			AnalyzerReport analyzerReport = jaxbService.unMarshall(new File(Filenames.goodPMD));
+			Properties config = new SwampProperties(new FileInputStream(Filenames.goodConfig));
 			WriterDispatcherService wds = new WriterDispatcherService(config, toolName);
 			wds.writeBugInstancesAndSummary(analyzerReport.getBugInstances(), analyzerReport.getBugSummary());
 		} catch (Exception e) {
@@ -108,8 +110,8 @@ public class TestWriterDispatcherService {
 		boolean exceptionFound = false;
 		ToolName toolName = ToolName.SPOT_BUGS;
 		try {
-			AnalyzerReport analyzerReport = jaxbService.unMarshall(new File(TestFilenames.goodSpotBugs));
-			Properties config = new SwampProperties(new FileInputStream(TestFilenames.goodConfig));
+			AnalyzerReport analyzerReport = jaxbService.unMarshall(new File(Filenames.goodSpotBugs));
+			Properties config = new SwampProperties(new FileInputStream(Filenames.goodConfig));
 			WriterDispatcherService wds = new WriterDispatcherService(config, toolName);
 			wds.writeBugInstancesAndSummary(analyzerReport.getBugInstances(), analyzerReport.getBugSummary());
 		} catch (Exception e) {
@@ -125,8 +127,8 @@ public class TestWriterDispatcherService {
 		boolean exceptionFound = false;
 		ToolName toolName = ToolName.CHECK_STYLE;
 		try {
-			AnalyzerReport analyzerReport = jaxbService.unMarshall(new File(TestFilenames.goodCheckstyle));
-			Properties config = new SwampProperties(new FileInputStream(TestFilenames.goodConfig));
+			AnalyzerReport analyzerReport = jaxbService.unMarshall(new File(Filenames.goodCheckstyle));
+			Properties config = new SwampProperties(new FileInputStream(Filenames.goodConfig));
 			WriterDispatcherService wds = new WriterDispatcherService(config, toolName);
 			wds.writeBugInstancesAndSummary(analyzerReport.getBugInstances(), analyzerReport.getBugSummary());
 		} catch (Exception e) {
@@ -146,8 +148,8 @@ public class TestWriterDispatcherService {
 		boolean exceptionFound = false;
 		ToolName toolName = ToolName.OWASP;
 		try {
-			AnalyzerReport analyzerReport = jaxbService.unMarshall(new File(TestFilenames.goodOWASP));
-			Properties config = new SwampProperties(new FileInputStream(TestFilenames.goodConfig_custom));
+			AnalyzerReport analyzerReport = jaxbService.unMarshall(new File(Filenames.goodOWASP));
+			Properties config = new SwampProperties(new FileInputStream(Filenames.goodConfig_custom));
 			WriterDispatcherService wds = new WriterDispatcherService(config, toolName);
 			wds.writeBugInstancesAndSummary(analyzerReport.getBugInstances(), analyzerReport.getBugSummary());
 		} catch(BugReportException b) {
@@ -166,8 +168,8 @@ public class TestWriterDispatcherService {
 		boolean exceptionFound = false;
 		ToolName toolName = ToolName.OWASP;
 		try {
-			AnalyzerReport analyzerReport = jaxbService.unMarshall(new File(TestFilenames.emptyOwasp));
-			Properties config = new SwampProperties(new FileInputStream(TestFilenames.goodConfig_custom));
+			AnalyzerReport analyzerReport = jaxbService.unMarshall(new File(Filenames.emptyOwasp));
+			Properties config = new SwampProperties(new FileInputStream(Filenames.goodConfig_custom));
 			WriterDispatcherService wds = new WriterDispatcherService(config, toolName);
 			wds.writeBugInstancesAndSummary(analyzerReport.getBugInstances(), analyzerReport.getBugSummary());
 		} catch(BugReportException b) {
@@ -184,8 +186,8 @@ public class TestWriterDispatcherService {
 		boolean exceptionFound = false;
 		ToolName toolName = ToolName.PMD;
 		try {
-			AnalyzerReport analyzerReport = jaxbService.unMarshall(new File(TestFilenames.goodPMD));
-			Properties config = new SwampProperties(new FileInputStream(TestFilenames.goodConfig_custom));
+			AnalyzerReport analyzerReport = jaxbService.unMarshall(new File(Filenames.goodPMD));
+			Properties config = new SwampProperties(new FileInputStream(Filenames.goodConfig_custom));
 			WriterDispatcherService wds = new WriterDispatcherService(config, toolName);
 			wds.writeBugInstancesAndSummary(analyzerReport.getBugInstances(), analyzerReport.getBugSummary());
 		} catch (Exception e) {
@@ -201,8 +203,8 @@ public class TestWriterDispatcherService {
 		boolean exceptionFound = false;
 		ToolName toolName = ToolName.SPOT_BUGS;
 		try {
-			AnalyzerReport analyzerReport = jaxbService.unMarshall(new File(TestFilenames.goodSpotBugs));
-			Properties config = new SwampProperties(new FileInputStream(TestFilenames.goodConfig_custom));
+			AnalyzerReport analyzerReport = jaxbService.unMarshall(new File(Filenames.goodSpotBugs));
+			Properties config = new SwampProperties(new FileInputStream(Filenames.goodConfig_custom));
 			WriterDispatcherService wds = new WriterDispatcherService(config, toolName);
 			wds.writeBugInstancesAndSummary(analyzerReport.getBugInstances(), analyzerReport.getBugSummary());
 		} catch (Exception e) {
@@ -218,8 +220,8 @@ public class TestWriterDispatcherService {
 		boolean exceptionFound = false;
 		ToolName toolName = ToolName.CHECK_STYLE;
 		try {
-			AnalyzerReport analyzerReport = jaxbService.unMarshall(new File(TestFilenames.goodCheckstyle));
-			Properties config = new SwampProperties(new FileInputStream(TestFilenames.goodConfig_custom));
+			AnalyzerReport analyzerReport = jaxbService.unMarshall(new File(Filenames.goodCheckstyle));
+			Properties config = new SwampProperties(new FileInputStream(Filenames.goodConfig_custom));
 			WriterDispatcherService wds = new WriterDispatcherService(config, toolName);
 			wds.writeBugInstancesAndSummary(analyzerReport.getBugInstances(), analyzerReport.getBugSummary());
 		} catch (Exception e) {

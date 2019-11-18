@@ -1,6 +1,6 @@
 package exceptions;
 
-public class CSVHeaderException extends Exception {
+public class CSVHeaderException extends SwampException {
 
 	/**
 	 * 
@@ -9,6 +9,9 @@ public class CSVHeaderException extends Exception {
 
 	public CSVHeaderException(String message) {
 		super(message);
-		// TODO Auto-generated constructor stub
+	}
+	
+	public CSVHeaderException(String message, ExceptionCode configCode) {
+		super(message, configCode);
 	}
 }

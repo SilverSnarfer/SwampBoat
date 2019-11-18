@@ -30,11 +30,46 @@ public class PropertiesTool {
 		return props;
 	}
 	
-	public static Map<String, String> location_niether() {
+	public static Map<String, String> location_incompleteCustom() {
 		Map<String, String> props = new HashMap<>();
+		props.put(useDefaultCsvDestinationProp, "false");
+		props.put(customReportDestProp, "fjdsio");
+		return props;
+
+	}
+	
+	public static Map<String, String> filenames_empty() {
+		Map<String, String> props = new HashMap<>();
+		props.put(useDefaultCsvDestinationProp, "true");
+		props.put(defaultCsvDestinationProp, "kopewk");
 		return props;
 	}
 	
+	
+	public static Map<String, String> filenames_mixed() {
+		Map<String, String> props = new HashMap<>();
+		props.put(useDefaultCsvDestinationProp, "true");
+		props.put(defaultCsvDestinationProp, "kopewk");
+		props.put(customReportFilenameProp, "jdfsoi");
+		props.put(defaultSummaryFilenameProp, "fjdklsjk");
+		return props;
+	}
+	
+	public static Map<String, String> filenames_incompleteDefault() {
+		Map<String, String> props = new HashMap<>();
+		props.put(useDefaultCsvDestinationProp, "true");
+		props.put(defaultCsvDestinationProp, "kopewk");
+		props.put(defaultSummaryFilenameProp, "fjdklsjk");
+		return props;
+	}
+	
+	public static Map<String, String> filenames_incompleteCustom() {
+		Map<String, String> props = new HashMap<>();
+		props.put(useDefaultCsvDestinationProp, "true");
+		props.put(defaultCsvDestinationProp, "kopewk");
+		props.put(customSummaryFilenameProp, "fjdklsjk");
+		return props;
+	}
 	
 	public static String nullSafe(String str) {
 		return str == null ? "": str;

@@ -104,59 +104,7 @@ public class AnalyzerReport {
 			toolName = ToolName.PMD;
 		}
 	}
-
-	public String getAssessFwVersion() {
-		return assess_fw_version;
-	}
-
-	public String getAssessFw() {
-		return assess_fw;
-	}
-
-	public String getAssessmentStartTs() {
-		return assessment_start_ts;
-	}
-
-	public String getUuid() {
-		return uuid;
-	}
-
-	public String getParserFwVersion() {
-		return parser_fw_version;
-	}
-
-	public String getBuildRootDir() {
-		return build_root_dir;
-	}
-
-	public String getPackageVersion() {
-		return package_version;
-	}
-
-	public String getPlatformName() {
-		return platform_name;
-	}
-
-	public String getToolVersion() {
-		return tool_version;
-	}
-
-	public String getPackageRootDir() {
-		return package_root_dir;
-	}
-
-	public String getPackageName() {
-		return package_name;
-	}
-
-	public String getParserFw() {
-		return parser_fw;
-	}
-
-	public String getXmlToolName() {
-		return tool_name;
-	}
-
+	
 	public List<BugInstance> getBugInstances() {
 		return bugInstances;
 	}

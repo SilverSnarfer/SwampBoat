@@ -18,6 +18,7 @@ import org.junit.jupiter.api.Test;
 import TestingTools.Filenames;
 import TestingTools.PropertiesTool;
 import exceptions.ConfigFileException;
+import exceptions.SwampException.ExceptionCode;
 import main.java.services.TestWriterDispatcherService;
 import pojo.AnalyzerReport.ToolName;
 import tools.FileWriterTool;
@@ -55,31 +56,145 @@ public class TestFileWriterTool {
 			exceptionFound = true;
 			logger.error("Error during 'TestFileWriterTool.testInitializeFilesAndFolders'", e);
 		}
-		
 		Assertions.assertFalse(exceptionFound);
-		Assertions.assertTrue(new File(config.getProperty("defaultCsvDestination") + "/" +toolName.toString() + (!saveRuns ? "" : timeStamp)).exists());
 	}
 	
 	
 	@Test
-	public void testInitializeFilesAndFoldersBadDestinations() {
-		boolean exceptionFound = false;
+	public void testInitializeFilesAndFoldersEmptyDestinations() {
 		ToolName toolName = ToolName.OWASP;
 		String timeStamp = new Timestamp(System.currentTimeMillis()).toString().replace(':', '.');
 		boolean saveRuns = false; 
-
+		ConfigFileException exception = null;
 		Properties config = new Properties();
 		
 		try {
 			saveRuns = PropertiesTool.nullSafe(config.getProperty("saveRuns")).trim().equalsIgnoreCase("true") ? true : false;
 			FileWriterTool.initializeFilesAndFolders(config, toolName, timeStamp, saveRuns);
 		} catch (ConfigFileException c) {
-			exceptionFound = true;
+			exception = c;
 		} catch (Exception e) {
 			logger.error("Error during 'TestFileWriterTool.testInitializeFilesAndFoldersBadDestinations'", e);
 		}
+		Assertions.assertTrue(exception.exceptionCode != null && ExceptionCode.ConfigFile_EmptyLocations.equals(exception.exceptionCode));
+	}
+	
+	@Test
+	public void testInitializeFilesAndFoldersMixedDestinations() {
+		ToolName toolName = ToolName.OWASP;
+		String timeStamp = new Timestamp(System.currentTimeMillis()).toString().replace(':', '.');
+		boolean saveRuns = false; 
+		ConfigFileException exception = null;
+		Properties config = new Properties();
 		
-		Assertions.assertTrue(exceptionFound);
-		Assertions.assertFalse(new File(PropertiesTool.nullSafe(config.getProperty("defaultCsvDestination")) + "/" +toolName.toString() + (!saveRuns ? "" : timeStamp)).exists());
+		try {
+			config.putAll(PropertiesTool.location_defaultAndCustom());
+			saveRuns = PropertiesTool.nullSafe(config.getProperty("saveRuns")).trim().equalsIgnoreCase("true") ? true : false;
+			FileWriterTool.initializeFilesAndFolders(config, toolName, timeStamp, saveRuns);
+		} catch (ConfigFileException c) {
+			exception = c;
+		} catch (Exception e) {
+			logger.error("Error during 'TestFileWriterTool.testInitializeFilesAndFoldersMixedDestinations'", e);
+		}
+		Assertions.assertTrue(exception.exceptionCode != null && ExceptionCode.ConfigFile_MixedLocations.equals(exception.exceptionCode));
+	}
+	@Test
+	public void testInitializeFilesAndFoldersIncompleteCustomLocations() {
+		ToolName toolName = ToolName.OWASP;
+		String timeStamp = new Timestamp(System.currentTimeMillis()).toString().replace(':', '.');
+		boolean saveRuns = false; 
+		ConfigFileException exception = null;
+		Properties config = new Properties();
+		
+		try {
+			config.putAll(PropertiesTool.location_incompleteCustom());
+			saveRuns = PropertiesTool.nullSafe(config.getProperty("saveRuns")).trim().equalsIgnoreCase("true") ? true : false;
+			FileWriterTool.initializeFilesAndFolders(config, toolName, timeStamp, saveRuns);
+		} catch (ConfigFileException c) {
+			exception = c;
+		} catch (Exception e) {
+			logger.error("Error during 'TestFileWriterTool.testInitializeFilesAndFoldersEmptyCustomLocations'", e);
+		}
+		Assertions.assertTrue(exception.exceptionCode != null && ExceptionCode.ConfigFile_IncompleteCustomLocations.equals(exception.exceptionCode));
+	}
+	
+	@Test
+	public void testInitializeFilesAndFoldersEmptyFilenames() {
+		ToolName toolName = ToolName.OWASP;
+		String timeStamp = new Timestamp(System.currentTimeMillis()).toString().replace(':', '.');
+		boolean saveRuns = false; 
+		ConfigFileException exception = null;
+		Properties config = new Properties();
+		
+		try {
+			config.putAll(PropertiesTool.filenames_empty());
+			saveRuns = PropertiesTool.nullSafe(config.getProperty("saveRuns")).trim().equalsIgnoreCase("true") ? true : false;
+			FileWriterTool.initializeFilesAndFolders(config, toolName, timeStamp, saveRuns);
+		} catch (ConfigFileException c) {
+			exception = c;
+		} catch (Exception e) {
+			logger.error("Error during 'TestFileWriterTool.testInitializeFilesAndFoldersEmptyFilenames'", e);
+		}
+		Assertions.assertTrue(exception.exceptionCode != null && ExceptionCode.ConfigFile_EmptyFilenames.equals(exception.exceptionCode));
+	}
+	
+	@Test
+	public void testInitializeFilesAndFoldersMixedFilenames() {
+		ToolName toolName = ToolName.OWASP;
+		String timeStamp = new Timestamp(System.currentTimeMillis()).toString().replace(':', '.');
+		boolean saveRuns = false; 
+		ConfigFileException exception = null;
+		Properties config = new Properties();
+		
+		try {
+			config.putAll(PropertiesTool.filenames_mixed());
+			saveRuns = PropertiesTool.nullSafe(config.getProperty("saveRuns")).trim().equalsIgnoreCase("true") ? true : false;
+			FileWriterTool.initializeFilesAndFolders(config, toolName, timeStamp, saveRuns);
+		} catch (ConfigFileException c) {
+			exception = c;
+		} catch (Exception e) {
+			logger.error("Error during 'TestFileWriterTool.testInitializeFilesAndFoldersMixedFilenames'", e);
+		}
+		Assertions.assertTrue(exception.exceptionCode != null && ExceptionCode.ConfigFile_MixedFilenames.equals(exception.exceptionCode));
+	}
+	
+	@Test
+	public void testInitializeFilesAndFoldersIncompleteDefaultFilenames() {
+		ToolName toolName = ToolName.OWASP;
+		String timeStamp = new Timestamp(System.currentTimeMillis()).toString().replace(':', '.');
+		boolean saveRuns = false; 
+		ConfigFileException exception = null;
+		Properties config = new Properties();
+		
+		try {
+			config.putAll(PropertiesTool.filenames_incompleteDefault());
+			saveRuns = PropertiesTool.nullSafe(config.getProperty("saveRuns")).trim().equalsIgnoreCase("true") ? true : false;
+			FileWriterTool.initializeFilesAndFolders(config, toolName, timeStamp, saveRuns);
+		} catch (ConfigFileException c) {
+			exception = c;
+		} catch (Exception e) {
+			logger.error("Error during 'TestFileWriterTool.testInitializeFilesAndFoldersIncompleteDefaultFilenames'", e);
+		}
+		Assertions.assertTrue(exception.exceptionCode != null && ExceptionCode.ConfigFile_IncompleteDefaultFilenames.equals(exception.exceptionCode));
+	}
+	
+	@Test
+	public void testInitializeFilesAndFoldersIncompleteCustomFilenames() {
+		ToolName toolName = ToolName.OWASP;
+		String timeStamp = new Timestamp(System.currentTimeMillis()).toString().replace(':', '.');
+		boolean saveRuns = false; 
+		ConfigFileException exception = null;
+		Properties config = new Properties();
+		
+		try {
+			config.putAll(PropertiesTool.filenames_incompleteCustom());
+			saveRuns = PropertiesTool.nullSafe(config.getProperty("saveRuns")).trim().equalsIgnoreCase("true") ? true : false;
+			FileWriterTool.initializeFilesAndFolders(config, toolName, timeStamp, saveRuns);
+		} catch (ConfigFileException c) {
+			exception = c;
+		} catch (Exception e) {
+			logger.error("Error during 'TestFileWriterTool.testInitializeFilesAndFoldersIncompleteCustomFilenames'", e);
+		}
+		Assertions.assertTrue(exception.exceptionCode != null && ExceptionCode.ConfigFile_IncompleteCustomFilenames.equals(exception.exceptionCode));
 	}
 }

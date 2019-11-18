@@ -21,14 +21,5 @@ public class InstanceLocation {
 	 */
 	public String getxPath() {
 		return xPath;
-	}
-
-	/**
-	 * @param xPath the xPath to set
-	 */
-	public void setxPath(String xPath) {
-		this.xPath = xPath;
-	}
-	
-	
+	}	
 }

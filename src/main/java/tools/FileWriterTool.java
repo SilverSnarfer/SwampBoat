@@ -16,6 +16,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import exceptions.ConfigFileException;
+import exceptions.SwampException.ExceptionCode;
 import pojo.AnalyzerReport.ToolName;
 import pojo.Location;
 import services.WriterDispatcherService;
@@ -116,32 +117,46 @@ public class FileWriterTool {
 
 		//Determines file locations
 		if(propertyNullSafe(useDefaultCsvDestinationProp, config).equalsIgnoreCase("true")) {
-			reportFileLocation = config.getProperty(defaultCsvDestinationProp);
-			summaryFileLocation = config.getProperty(defaultCsvDestinationProp);
 			usingDefaultLocation = true;
 		}
-		if(!usingDefaultLocation && !propertyNullSafe(customReportDestProp ,config).matches(spaceRegex) && !propertyNullSafe(customSummaryDestProp ,config).matches(spaceRegex)) {
+
+		if(propertyNullSafe(defaultCsvDestinationProp ,config).matches(spaceRegex) && propertyNullSafe(customReportDestProp ,config).matches(spaceRegex) && propertyNullSafe(customSummaryDestProp ,config).matches(spaceRegex)) {
+			throw new ConfigFileException("problem with your csv file settings (config.properties). No locations found", ExceptionCode.ConfigFile_EmptyLocations);
+		} else if(usingDefaultLocation && (!propertyNullSafe(customReportDestProp ,config).matches(spaceRegex) || !propertyNullSafe(customSummaryDestProp ,config).matches(spaceRegex))){ //Mixing locations
+			throw new ConfigFileException("problem with your csv file settings (config.properties). Both Default and custom locations are present.", ExceptionCode.ConfigFile_MixedLocations);
+		} else if(!usingDefaultLocation && (propertyNullSafe(customReportDestProp ,config).matches(spaceRegex) || propertyNullSafe(customSummaryDestProp ,config).matches(spaceRegex))) {//incomplete custom location 
+			throw new ConfigFileException("problem with your csv file settings (config.properties) Incomplete custom locations.", ExceptionCode.ConfigFile_IncompleteCustomLocations);
+
+		} else if(usingDefaultLocation){
+			reportFileLocation = config.getProperty(defaultCsvDestinationProp);
+			summaryFileLocation = config.getProperty(defaultCsvDestinationProp);
+		} else {
 			reportFileLocation = config.getProperty(customReportDestProp);
 			summaryFileLocation = config.getProperty(customSummaryDestProp);
-		} else if(usingDefaultLocation && (!propertyNullSafe(customReportDestProp ,config).matches(spaceRegex) || !propertyNullSafe(customSummaryDestProp ,config).matches(spaceRegex))){
-			throw new ConfigFileException("problem with your csv file settings (config.properties). Make sure either 'customCsvBug(Report/Summary)Destination' OR 'defaultCsvDestination'(not both) is set in the config file.");
-		} else if ((usingDefaultLocation && propertyNullSafe(defaultCsvDestinationProp ,config).matches(spaceRegex)) ||
-				!usingDefaultLocation && (propertyNullSafe(customReportDestProp ,config).matches(spaceRegex) || propertyNullSafe(customSummaryDestProp ,config).matches(spaceRegex))) {
-			throw new ConfigFileException("problem with your csv file settings (config.properties). Make sure either 'customCsvBug(Report/Summary)Destination' OR 'defaultCsvDestination'(not both) is set in the config file.");
 		}
 		
 		//Determines filenames
-		if(!propertyNullSafe(defaultReportFilenameProp ,config).matches(spaceRegex) && !propertyNullSafe(defaultSummaryFilenameProp ,config).matches(spaceRegex)) {
+		if(propertyNullSafe(defaultReportFilenameProp ,config).matches(spaceRegex) && propertyNullSafe(defaultSummaryFilenameProp ,config).matches(spaceRegex) &&
+				  propertyNullSafe(customReportFilenameProp ,config).matches(spaceRegex) && propertyNullSafe(customSummaryFilenameProp ,config).matches(spaceRegex)) { // empty filnames
+			throw new ConfigFileException("problem with your csv file settings (config.properties). No File names found.", ExceptionCode.ConfigFile_EmptyFilenames);
+		} else if((!propertyNullSafe(defaultReportFilenameProp ,config).matches(spaceRegex) || !propertyNullSafe(defaultSummaryFilenameProp ,config).matches(spaceRegex)) &&
+				  (!propertyNullSafe(customReportFilenameProp ,config).matches(spaceRegex) || !propertyNullSafe(customSummaryFilenameProp ,config).matches(spaceRegex))) {// mixing filenames
+			throw new ConfigFileException("problem with your csv file settings (config.properties). Both default and custom names found.", ExceptionCode.ConfigFile_MixedFilenames);
+		} else if(propertyNullSafe(customReportFilenameProp ,config).matches(spaceRegex) && propertyNullSafe(customSummaryFilenameProp ,config).matches(spaceRegex)){ //incomplete default filenames
+			usingDefaultFilenames = true;
+			if(propertyNullSafe(defaultReportFilenameProp ,config).matches(spaceRegex) || propertyNullSafe(defaultSummaryFilenameProp ,config).matches(spaceRegex)) {
+				throw new ConfigFileException("problem with your csv file settings (config.properties). Incomplete Default file names.", ExceptionCode.ConfigFile_IncompleteDefaultFilenames);
+			}
+		} else if (propertyNullSafe(defaultReportFilenameProp ,config).matches(spaceRegex) && propertyNullSafe(defaultSummaryFilenameProp ,config).matches(spaceRegex)) { //incomplete custom filenames
+			if(propertyNullSafe(customReportFilenameProp ,config).matches(spaceRegex) || propertyNullSafe(customSummaryFilenameProp ,config).matches(spaceRegex)) {
+				throw new ConfigFileException("problem with your csv file settings (config.properties). Incomplete Custom file names.", ExceptionCode.ConfigFile_IncompleteCustomFilenames);
+			}
+		} 
+		
+		if(usingDefaultFilenames) {
 			reportFilename = config.getProperty(defaultReportFilenameProp);
 			summaryFilename = config.getProperty(defaultSummaryFilenameProp);
-			usingDefaultFilenames = true;
-		} else if(!propertyNullSafe(defaultReportFilenameProp ,config).matches(spaceRegex) || !propertyNullSafe(defaultSummaryFilenameProp ,config).matches(spaceRegex)){
-			throw new ConfigFileException("problem with your csv file settings (config.properties). Make sure either 'customCsvBug(Report/Summary)Filename' OR 'default(Report/Summary)FilenameProp'(not both) is set in the config file.");
-		}
-		if((!usingDefaultFilenames && (propertyNullSafe(customReportFilenameProp ,config).matches(spaceRegex) || propertyNullSafe(customSummaryFilenameProp ,config).matches(spaceRegex))) ||
-		   (usingDefaultFilenames && (!propertyNullSafe(customReportFilenameProp ,config).matches(spaceRegex) || !propertyNullSafe(customSummaryFilenameProp ,config).matches(spaceRegex)))	) {
-			throw new ConfigFileException("problem with your csv file settings (config.properties). Make sure either 'customCsvBug(Report/Summary)Filename' OR 'default(Report/Summary)FilenameProp'(not both) is set in the config file.");
-		} else if(!usingDefaultFilenames) {
+		} else {
 			reportFilename = config.getProperty(customReportFilenameProp);
 			summaryFilename = config.getProperty(customSummaryFilenameProp);
 		}

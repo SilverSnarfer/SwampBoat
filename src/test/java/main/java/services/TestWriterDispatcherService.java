@@ -41,7 +41,7 @@ public class TestWriterDispatcherService {
 	@Test
 	public void testWriterInstantiation() {
 		boolean exceptionFound = false;
-		ToolName toolName = ToolName.OWASP;
+		ToolName toolName = ToolName.PMD;
 		try {
 			Properties config = new SwampProperties(new FileInputStream(Filenames.goodConfig));
 			new WriterDispatcherService(config, toolName);	
@@ -57,9 +57,10 @@ public class TestWriterDispatcherService {
 	@Test
 	public void testWriteEmptyOWASP() {
 		boolean exceptionFound = false;
-		ToolName toolName = ToolName.OWASP;
+		ToolName toolName = null;
 		try {
 			AnalyzerReport analyzerReport = jaxbService.unMarshall(new File(Filenames.emptyOwasp));
+			toolName = analyzerReport.getToolName();
 			Properties config = new SwampProperties(new FileInputStream(Filenames.goodConfig));
 			WriterDispatcherService wds = new WriterDispatcherService(config, toolName);
 			wds.writeBugInstancesAndSummary(analyzerReport.getBugInstances(), analyzerReport.getBugSummary());
@@ -75,9 +76,10 @@ public class TestWriterDispatcherService {
 	@Test
 	public void testWriteOWASP() {
 		boolean exceptionFound = false;
-		ToolName toolName = ToolName.OWASP;
+		ToolName toolName = null;
 		try {
 			AnalyzerReport analyzerReport = jaxbService.unMarshall(new File(Filenames.goodOWASP));
+			toolName = analyzerReport.getToolName();
 			Properties config = new SwampProperties(new FileInputStream(Filenames.goodConfig));
 			WriterDispatcherService wds = new WriterDispatcherService(config, toolName);
 			wds.writeBugInstancesAndSummary(analyzerReport.getBugInstances(), analyzerReport.getBugSummary());
@@ -91,9 +93,10 @@ public class TestWriterDispatcherService {
 	@Test
 	public void testWritePMD() {
 		boolean exceptionFound = false;
-		ToolName toolName = ToolName.PMD;
+		ToolName toolName = null;
 		try {
 			AnalyzerReport analyzerReport = jaxbService.unMarshall(new File(Filenames.goodPMD));
+			toolName = analyzerReport.getToolName();
 			Properties config = new SwampProperties(new FileInputStream(Filenames.goodConfig));
 			WriterDispatcherService wds = new WriterDispatcherService(config, toolName);
 			wds.writeBugInstancesAndSummary(analyzerReport.getBugInstances(), analyzerReport.getBugSummary());
@@ -108,9 +111,10 @@ public class TestWriterDispatcherService {
 	@Test
 	public void testWriteSpotBugs() {
 		boolean exceptionFound = false;
-		ToolName toolName = ToolName.SPOT_BUGS;
+		ToolName toolName = null;
 		try {
 			AnalyzerReport analyzerReport = jaxbService.unMarshall(new File(Filenames.goodSpotBugs));
+			toolName = analyzerReport.getToolName();
 			Properties config = new SwampProperties(new FileInputStream(Filenames.goodConfig));
 			WriterDispatcherService wds = new WriterDispatcherService(config, toolName);
 			wds.writeBugInstancesAndSummary(analyzerReport.getBugInstances(), analyzerReport.getBugSummary());
@@ -125,9 +129,10 @@ public class TestWriterDispatcherService {
 	@Test
 	public void testWriteCheckstyle() {
 		boolean exceptionFound = false;
-		ToolName toolName = ToolName.CHECK_STYLE;
+		ToolName toolName = null;
 		try {
 			AnalyzerReport analyzerReport = jaxbService.unMarshall(new File(Filenames.goodCheckstyle));
+			toolName = analyzerReport.getToolName();
 			Properties config = new SwampProperties(new FileInputStream(Filenames.goodConfig));
 			WriterDispatcherService wds = new WriterDispatcherService(config, toolName);
 			wds.writeBugInstancesAndSummary(analyzerReport.getBugInstances(), analyzerReport.getBugSummary());
@@ -146,9 +151,10 @@ public class TestWriterDispatcherService {
 	@Test
 	public void testWriteOWASPCustom() {
 		boolean exceptionFound = false;
-		ToolName toolName = ToolName.OWASP;
+		ToolName toolName = null;
 		try {
 			AnalyzerReport analyzerReport = jaxbService.unMarshall(new File(Filenames.goodOWASP));
+			toolName = analyzerReport.getToolName();
 			Properties config = new SwampProperties(new FileInputStream(Filenames.goodConfig_custom));
 			WriterDispatcherService wds = new WriterDispatcherService(config, toolName);
 			wds.writeBugInstancesAndSummary(analyzerReport.getBugInstances(), analyzerReport.getBugSummary());
@@ -166,9 +172,10 @@ public class TestWriterDispatcherService {
 	@Test
 	public void testWriteEmptyOWASPCustom() {
 		boolean exceptionFound = false;
-		ToolName toolName = ToolName.OWASP;
+		ToolName toolName = null;
 		try {
 			AnalyzerReport analyzerReport = jaxbService.unMarshall(new File(Filenames.emptyOwasp));
+			toolName = analyzerReport.getToolName();
 			Properties config = new SwampProperties(new FileInputStream(Filenames.goodConfig_custom));
 			WriterDispatcherService wds = new WriterDispatcherService(config, toolName);
 			wds.writeBugInstancesAndSummary(analyzerReport.getBugInstances(), analyzerReport.getBugSummary());
@@ -184,9 +191,10 @@ public class TestWriterDispatcherService {
 	@Test
 	public void testWritePMDCustom() {
 		boolean exceptionFound = false;
-		ToolName toolName = ToolName.PMD;
+		ToolName toolName = null;
 		try {
 			AnalyzerReport analyzerReport = jaxbService.unMarshall(new File(Filenames.goodPMD));
+			toolName = analyzerReport.getToolName();
 			Properties config = new SwampProperties(new FileInputStream(Filenames.goodConfig_custom));
 			WriterDispatcherService wds = new WriterDispatcherService(config, toolName);
 			wds.writeBugInstancesAndSummary(analyzerReport.getBugInstances(), analyzerReport.getBugSummary());
@@ -201,9 +209,10 @@ public class TestWriterDispatcherService {
 	@Test
 	public void testWriteSpotBugsCustom() {
 		boolean exceptionFound = false;
-		ToolName toolName = ToolName.SPOT_BUGS;
+		ToolName toolName = null;
 		try {
 			AnalyzerReport analyzerReport = jaxbService.unMarshall(new File(Filenames.goodSpotBugs));
+			toolName = analyzerReport.getToolName();
 			Properties config = new SwampProperties(new FileInputStream(Filenames.goodConfig_custom));
 			WriterDispatcherService wds = new WriterDispatcherService(config, toolName);
 			wds.writeBugInstancesAndSummary(analyzerReport.getBugInstances(), analyzerReport.getBugSummary());
@@ -218,9 +227,10 @@ public class TestWriterDispatcherService {
 	@Test
 	public void testWriteCheckstyleCustom() {
 		boolean exceptionFound = false;
-		ToolName toolName = ToolName.CHECK_STYLE;
+		ToolName toolName = null;
 		try {
 			AnalyzerReport analyzerReport = jaxbService.unMarshall(new File(Filenames.goodCheckstyle));
+			toolName = analyzerReport.getToolName();
 			Properties config = new SwampProperties(new FileInputStream(Filenames.goodConfig_custom));
 			WriterDispatcherService wds = new WriterDispatcherService(config, toolName);
 			wds.writeBugInstancesAndSummary(analyzerReport.getBugInstances(), analyzerReport.getBugSummary());

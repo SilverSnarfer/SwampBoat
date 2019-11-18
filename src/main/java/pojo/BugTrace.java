@@ -29,12 +29,7 @@ public class BugTrace {
 	public String getBuildId() {
 		return buildId;
 	}
-	/**
-	 * @param buildId the buildId to set
-	 */
-	public void setBuildId(String buildId) {
-		this.buildId = buildId;
-	}
+
 	/**
 	 * @return the assessmentReportFile
 	 */
@@ -42,23 +37,12 @@ public class BugTrace {
 		return assessmentReportFile;
 	}
 	/**
-	 * @param assessmentReportFile the assessmentReportFile to set
-	 */
-	public void setAssessmentReportFile(String assessmentReportFile) {
-		this.assessmentReportFile = assessmentReportFile;
-	}
-	/**
 	 * @return the instanceLocation
 	 */
 	public InstanceLocation getInstanceLocation() {
 		return instanceLocation;
 	}
-	/**
-	 * @param instanceLocation the instanceLocation to set
-	 */
-	public void setInstanceLocation(InstanceLocation instanceLocation) {
-		this.instanceLocation = instanceLocation;
-	}
+
 	
 	
 	
